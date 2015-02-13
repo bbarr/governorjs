@@ -126,7 +126,7 @@ var StateHistory = React.createClass({ // stash
     return (
       <div id="state-history">
         {
-          stateHistory.map(function(item, i) {
+          stateHistory.reverse().map(function(item, i) {
             return <div className="item" key={i}>
               <button onClick={this.props.onRecreate.bind(null, item)}>recreate</button>
               {JSON.stringify(item)}
