@@ -3,8 +3,8 @@ System.config({
     "*": "*.js",
     "./lib/*": "../../../lib/*.js",
     "governorjs-todos-example/*": "lib/*.js",
-    "github:*": "jspm_packages/github/*.js",
-    "npm:*": "jspm_packages/npm/*.js"
+    "github:*": "examples/todos/public/jspm_packages/github/*.js",
+    "npm:*": "examples/todos/public/jspm_packages/npm/*.js"
   }
 });
 
