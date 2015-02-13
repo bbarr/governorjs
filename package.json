@@ -1,0 +1,28 @@
+{
+  "name": "governorjs",
+  "version": "0.0.0",
+  "description": "A simple state-composition mixin for React",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "test",
+    "baseURL": "examples/todos/app",
+    "lib": "examples/todos/app",
+    "packages": "examples/todos/app/jspm_packages"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "jspm": {
+    "name": "governorjs-todos-demo",
+    "directories": {
+      "baseURL": "examples/todos/app",
+      "lib": "examples/todos/app"
+    },
+    "dependencies": {
+      "ramda": "npm:ramda@^0.9.1",
+      "react": "npm:react@^0.12.2"
+    }
+  }
+}

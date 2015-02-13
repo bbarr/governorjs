@@ -1,0 +1,15 @@
+{
+  "jspm": {
+    "name": "governorjs-todos-example",
+    "directories": {
+      "baseURL": "../..",
+      "packages": "public/jspm_packages"
+    },
+    "configFile": "public/config.js",
+    "dependencies": {
+      "jsx": "^0.1.1",
+      "ramda": "npm:ramda@^0.9.1",
+      "react": "npm:react@^0.12.2"
+    }
+  }
+}
