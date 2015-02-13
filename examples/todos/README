@@ -6,3 +6,5 @@ npm install node-static -g
 jspm install
 static ../..
 
+open "http://localhost:8080/examples/todos/public/index.html"
+
