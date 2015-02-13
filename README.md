@@ -2,7 +2,7 @@
 State/Store bindings for React.
 
 ## Example
-```
+```javascript
 var React = require('react')
 var Governor = require('governorjs')
 
@@ -52,7 +52,7 @@ var MessageInput = React.createClass({
 ##API
 
 ###rootMixin :: (array) -> react-mixin-object
-```
+```javascript
 var mixin = Governor.rootMixin([
   [ 'foo', fooStore ],
   [ 'bar', barStore ]
@@ -62,7 +62,7 @@ var mixin = Governor.rootMixin([
 The above mixin, when mixed into a component, would bind ```this.state.foo``` to ```fooStore```.
 
 ###childMixin :: (str str ...etc) -> react-mixin-object
-```
+```javascript
 var mixin = Governor.childMixin('foo', 'zap')
 ```
 The above mixin, when mixed into a component, would cause it to only rerender if its incoming "foo" or "zap" property was changed from the last render (using ```===```).
@@ -80,7 +80,7 @@ This function will also receive 2 arguments, the first, an object containing ```
 Sometimes a store will need to know about some other bit of state outside its domain. Since we want our state to be normalized, rather than introduce duplication or rely on events to synchronize
 our state, we can handle it like this:
 
-```
+```javascript
 var storeA = function(state) {
   return {
     actions: { ... },
