@@ -80,6 +80,7 @@ This function will also receive 2 arguments, the first, an object containing ```
 Sometimes a store will need to know about some other bit of state outside its domain. Since we want our state to be normalized, rather than introduce duplication or rely on events to synchronize
 our state, we can handle it like this:
 
+```
 var storeA = function(state) {
   return {
     actions: { ... },
