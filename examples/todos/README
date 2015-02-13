@@ -1,5 +1,8 @@
 
 From this directory:
 
+npm install node-static -g
 
+jspm install
+static ../..
 
