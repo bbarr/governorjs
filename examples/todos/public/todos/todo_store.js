@@ -1,35 +1,15 @@
 
 import R from 'ramda'
+import kefir from 'kefir'
 
 var createId = (function() {
   var id = 0
   return function() { return (id++).toString() }
 })()
 
-var TodoStore = function(state) {
+var TodoStore = function(state, hub) {
 
-  // set default
-  state.set({ 
-    $set: { 
-      list: [],
-      pending: '',
-      editBuffer: {}
-    }
-  })
-
-  return {
-
-    // this object contains event names that 
-    // will be bound to mixed-in component's event hub
-    actions: {
-      CREATE_TODO: 'create',
-      DELETE_TODO: 'remove',
-      PATCH_TODO: 'patch',
-      START_EDITING_TODO: 'startEditing',
-      CANCEL_EDITING_TODO: 'cancelEditing',
-      STOP_EDITING_TODO: 'stopEditing',
-      SET_PENDING: function(text) { state.set({ pending: { $set: text } }) }
-    },
+  var actions = {
 
     create: function() {
       var todo = { id: createId(), text: state.get().pending, done: false }
@@ -72,6 +52,27 @@ var TodoStore = function(state) {
       })
     }
   }
+
+  // set default
+  state.set({ 
+    $set: { 
+      list: [],
+      pending: '',
+      editBuffer: {}
+    }
+  })
+
+  hub.on('CREATE_TODO', actions.create)
+  hub.on('DELETE_TODO', actions.remove)
+  hub.on('PATCH_TODO', actions.patch)
+  hub.on('START_EDITING_TODO', actions.startEditing)
+  hub.on('CANCEL_EDITING_TODO', actions.cancelEditing)
+  hub.on('SET_PENDING', function(text) { state.set({ pending: { $set: text } }) })
+
+  var createStream = kefir.fromEvent(hub, 'START_EDITING_TODO')
+  var patchStream = kefir.fromEvent(hub, 'CANCEL_EDITING_TODO')
+  createStream.combine(patchStream).log()
+
 }
 
 export default TodoStore
