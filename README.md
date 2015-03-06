@@ -63,6 +63,8 @@ var stateManager = Governor.create({
   foo: fooStore,
   bar: barStore
 }, function(state, hub) {
+  // state.foo is fooStore's state
+  // state.bar is barStore's state
   // do things with current state and communication hub
 })
 ```
