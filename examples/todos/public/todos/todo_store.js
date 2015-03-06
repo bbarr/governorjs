@@ -1,6 +1,5 @@
 
 import R from 'ramda'
-import kefir from 'kefir'
 
 var createId = (function() {
   var id = 0
@@ -8,6 +7,15 @@ var createId = (function() {
 })()
 
 var TodoStore = function(state, hub) {
+
+  // set default
+  state.set({ 
+    $set: { 
+      list: [],
+      pending: '',
+      editBuffer: {}
+    }
+  })
 
   var actions = {
 
@@ -53,26 +61,15 @@ var TodoStore = function(state, hub) {
     }
   }
 
-  // set default
-  state.set({ 
-    $set: { 
-      list: [],
-      pending: '',
-      editBuffer: {}
-    }
+  hub.on({
+    CREATE_TODO: actions.create,
+    DELETE_TODO: actions.remove,
+    PATCH_TODO: actions.patch,
+    START_EDITING_TODO: actions.startEditing,
+    CANCEL_EDITING_TODO: actions.cancelEditing,
+    STOP_EDITING_TODO: actions.stopEditing,
+    SET_PENDING: function(text) { state.set({ pending: { $set: text } }) }
   })
-
-  hub.on('CREATE_TODO', actions.create)
-  hub.on('DELETE_TODO', actions.remove)
-  hub.on('PATCH_TODO', actions.patch)
-  hub.on('START_EDITING_TODO', actions.startEditing)
-  hub.on('CANCEL_EDITING_TODO', actions.cancelEditing)
-  hub.on('SET_PENDING', function(text) { state.set({ pending: { $set: text } }) })
-
-  var createStream = kefir.fromEvent(hub, 'START_EDITING_TODO')
-  var patchStream = kefir.fromEvent(hub, 'CANCEL_EDITING_TODO')
-  createStream.combine(patchStream).log()
-
 }
 
 export default TodoStore

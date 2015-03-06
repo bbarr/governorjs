@@ -13,7 +13,7 @@ System.config({
     "firebase": "npm:firebase@2.2.0",
     "governor": "./lib/index",
     "jsx": "github:floatdrop/plugin-jsx@0.1.1",
-    "ramda": "npm:ramda@0.9.1",
+    "ramda": "npm:ramda@0.10.0",
     "react": "npm:react@0.12.2",
     "github:floatdrop/plugin-jsx@0.1.1": {
       "react-tools": "npm:react-tools@0.12.2"
@@ -48,7 +48,7 @@ System.config({
       "path-browserify": "npm:path-browserify@0.0.0"
     },
     "github:jspm/nodelibs-process@0.1.1": {
-      "process": "npm:process@0.10.0"
+      "process": "npm:process@0.10.1"
     },
     "github:jspm/nodelibs-querystring@0.1.0": {
       "querystring": "npm:querystring@0.2.0"
@@ -70,6 +70,7 @@ System.config({
     },
     "npm:amdefine@0.1.0": {
       "fs": "github:jspm/nodelibs-fs@0.1.1",
+      "module": "github:jspm/nodelibs-module@0.1.0",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
@@ -193,7 +194,8 @@ System.config({
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
       "miller-rabin": "npm:miller-rabin@1.1.5",
       "process": "github:jspm/nodelibs-process@0.1.1",
-      "randombytes": "npm:randombytes@2.0.1"
+      "randombytes": "npm:randombytes@2.0.1",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
     "npm:elliptic@1.0.1": {
       "bn.js": "npm:bn.js@1.3.0",
@@ -258,6 +260,7 @@ System.config({
     "npm:graceful-fs@3.0.5": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
       "constants": "github:jspm/nodelibs-constants@0.1.0",
+      "module": "github:jspm/nodelibs-module@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.1",
       "util": "github:jspm/nodelibs-util@0.1.0",
       "vm": "github:jspm/nodelibs-vm@0.1.0"
@@ -339,7 +342,8 @@ System.config({
       "create-hmac": "npm:create-hmac@1.1.3",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
       "path": "github:jspm/nodelibs-path@0.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.1"
+      "process": "github:jspm/nodelibs-process@0.1.1",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
     "npm:public-encrypt@1.1.2": {
       "bn.js": "npm:bn.js@1.3.0",
@@ -354,8 +358,7 @@ System.config({
     "npm:q@1.1.2": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
-    "npm:ramda@0.9.1": {
-      "path": "github:jspm/nodelibs-path@0.1.0",
+    "npm:ramda@0.10.0": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
     "npm:randombytes@2.0.1": {

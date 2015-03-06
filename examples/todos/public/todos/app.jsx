@@ -5,31 +5,17 @@ import Governor from 'governor'
 
 import TodoStore from './todo_store'
 
-var highlightMixin = { // stash
-  componentDidUpdate: function() {
-    var el = this.getDOMNode()
-    if (el.classList.contains('highlight')) return
-    el.classList.add('highlight')
-    setTimeout(function() { el.classList.remove('highlight') }, 100)
-  }
-}
-
-var stateHistory = [] // stash
+var stateHistory = []
+var genId = (function() { var id = 0; return function() { return id++ } })()
 
 var TodoApp = React.createClass({
 
-  mixins: [ 
-    Governor.rootMixin([
-      [ 'todos', TodoStore ]
-    ])
-  ],
-
   render: function() {
 
-    stateHistory.push(this.state) // stash
+    stateHistory.unshift(R.omit([ 'hub' ], R.merge(this.props, { id: genId() })))
 
     var hub = this.props.hub
-    var todos = this.state.todos
+    var todos = this.props.todos
 
     var list = todos.list.map(function(todo) {
       return <Item key={todo.id} isEditing={todos.editBuffer[todo.id]} todo={todo} hub={hub} />
@@ -37,7 +23,7 @@ var TodoApp = React.createClass({
 
     return (
       <div id="todo-app-component">
-        <StateHistory onRecreate={R.unary(this.setState.bind(this)) /* stash */} /> 
+        <StateHistory onRecreate={R.unary(this.setProps.bind(this))} /> 
         <h3>Todo Example</h3>
         <ItemInput
           onSubmit={hub.bind('CREATE_TODO')}
@@ -52,7 +38,7 @@ var TodoApp = React.createClass({
 
 var ItemInput = React.createClass({
 
-  mixins: [ Governor.childMixin('value'), highlightMixin ], // stash
+  mixins: [ Governor.pureRenderMixin('value'), Governor.highlightMixin ],
 
   render: function() {
     return (
@@ -65,7 +51,7 @@ var ItemInput = React.createClass({
 
 var Item = React.createClass({
 
-  mixins: [ Governor.childMixin('todo', 'isEditing'), highlightMixin ], // stash
+  mixins: [ Governor.pureRenderMixin('todo', 'isEditing'), Governor.highlightMixin ],
 
   patchText: function(e) {
     this.props.hub.emit('PATCH_TODO', this.props.todo, { text: e.target.value })
@@ -120,16 +106,17 @@ var Item = React.createClass({
   }
 })
 
-var StateHistory = React.createClass({ // stash
+var StateHistory = React.createClass({
 
   render: function() {
     return (
       <div id="state-history">
         {
-          stateHistory.reverse().map(function(item, i) {
-            return <div className="item" key={i}>
+          stateHistory.map(function(item) {
+            var json = JSON.stringify(item)
+            return <div className="item" key={item.id}>
               <button onClick={this.props.onRecreate.bind(null, item)}>recreate</button>
-              {JSON.stringify(item)}
+              {json}
             </div>
           }, this)
         }
@@ -138,4 +125,8 @@ var StateHistory = React.createClass({ // stash
   }
 })
 
-React.render(<TodoApp />, document.getElementById('todos'))
+Governor.create({
+  todos: TodoStore
+}, function(data, hub) {
+  React.render(<TodoApp hub={hub} {...data} />, document.getElementById('todos'))
+})
