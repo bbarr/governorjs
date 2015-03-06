@@ -1,5 +1,5 @@
 {
-  "name": "governor",
+  "name": "governor-js",
   "version": "0.0.1",
   "description": "State manager courtesy of React.addons.update",
   "main": "lib/index.js",
