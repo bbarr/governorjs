@@ -1,12 +1,12 @@
 # governorjs
-State/Store bindings for React.
+State manager courtesy of React.addons.update
 
 ## Example
 ```javascript
 var React = require('react')
-var Governor = require('governorjs')
+var Governor = require('governor')
 
-var MessageStore = function(state) {
+var messageStore = function(state, hub) {
 
   function set(newText) { 
     state.set({ $set: newText }) 
@@ -14,16 +14,10 @@ var MessageStore = function(state) {
 
   set('some default text')
 
-  return {
-    actions: {
-      UPDATE_TEXT: set
-    }
-  }
+  hub.on('updateText', set)
 }
 
 var Message = React.createClass({
-
-  mixins: [ Governor.rootMixin([ [ 'text', MessageStore ] ]) ],
 
   render: function() {
     return (
@@ -40,30 +34,42 @@ var MessageInput = React.createClass({
   mixins: [ Governor.childMixin('text') ],
 
   update: function(e) {
-    this.props.hub.emit('UPDATE_TEXT', e.target.value)
+    this.props.emit('updateText', e.target.value)
   },
 
   render: function() {
-    <input type="text" value={this.props.text} onChange={this.update} />
+    <input type="text" value={this.props.message} onChange={this.update} />
   }
+})
+
+Governor.create({
+
+  // binds messageStore's get/set to 'message' property of state given to below callback
+  message: messageStore
+
+}, function(state, hub) {
+
+  // state is the current state (initially an object with whatever changes the above stores make
+  // hub is simple pub/sub to trigger actions in stores
+  React.render(<Message {...state} emit={hub.emit} />, document.getElementById('message'))
 })
 ```
 
 ##API
 
-###rootMixin :: (array) -> react-mixin-object
+###create :: (Object) -> Object
 ```javascript
-var mixin = Governor.rootMixin([
-  [ 'foo', fooStore ],
-  [ 'bar', barStore ]
-])
+var stateManager = Governor.create({
+  foo: fooStore,
+  bar: barStore
+}, function(state, hub) {
+  // do things with current state and communication hub
+})
 ```
 
-The above mixin, when mixed into a component, would bind ```this.state.foo``` to ```fooStore```.
-
-###childMixin :: (str str ...etc) -> react-mixin-object
+###pureRenderMixin :: (str str ...etc) -> react-mixin-object
 ```javascript
-var mixin = Governor.childMixin('foo', 'zap')
+var mixin = Governor.pureRenderMixin('foo', 'zap')
 ```
 The above mixin, when mixed into a component, would cause it to only rerender if its incoming "foo" or "zap" property was changed from the last render (using ```===```).
 
@@ -74,36 +80,4 @@ This function must return an object, probably with an ```actions``` property con
 
 This function will also receive 2 arguments, the first, an object containing ```get``` and ```set``` methods, used to update the store's state, and the second, a reference to the event hub that is being used by the target component (and all of its other stores and children components).
 
-```set``` uses React.addons.update, [documented here](http://facebook.github.io/react/docs/update.html).
-
-###State dependencies
-Sometimes a store will need to know about some other bit of state outside its domain. Since we want our state to be normalized, rather than introduce duplication or rely on events to synchronize
-our state, we can handle it like this:
-
-```javascript
-var storeA = function(state) {
-  return {
-    actions: { ... },
-    dependencies: {
-      bar: function(bar) { ... }
-    }
-  }
-}
-
-var storeB = function(state) {
-  state.set({ someBar: { $set: 5 } })
-  return { ... }
-}
-
-var mixin = Governor.rootMixin([
-  [ 'a', storeA, { bar: 'b.someBar' } ],
-  [ 'b', storeB ]
-])
-
-var App = React.createClass({
-  mixins: [ mixin ]
-  ...
-})
-```
-
-Now whenever storeB changes ```someBar``` on its state, ```storeA```'s callback will be fired with the new value.
+  ```set``` uses React.addons.update, [documented here](http://facebook.github.io/react/docs/update.html).
