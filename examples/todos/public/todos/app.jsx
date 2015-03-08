@@ -24,7 +24,7 @@ var TodoApp = React.createClass({
     return (
       <div id="todo-app-component">
         <StateHistory onRecreate={R.unary(this.setProps.bind(this))} /> 
-        <h3>Todo Example</h3>
+        <h3 onClick={hub.set.bind(hub, { foo: { $set: 'bar' } } )}>Todo Example { this.props.view.foo }</h3>
         <ItemInput
           onSubmit={hub.bind('CREATE_TODO')}
           value={todos.pending}
