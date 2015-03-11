@@ -22,8 +22,8 @@ var Message = React.createClass({
   render: function() {
     return (
       <div id="example">
-        <MessageInput hub={this.props.hub} text={this.state.text} />
-        { this.state.text }
+        <MessageInput emit={this.props.emit} text={this.props.text} />
+        { this.props.text }
       </div>
     )
   }
@@ -31,14 +31,15 @@ var Message = React.createClass({
 
 var MessageInput = React.createClass({
 
-  mixins: [ Governor.childMixin('text') ],
+  // will only rerender if props.text is changed
+  mixins: [ Governor.pureRenderMixin('text') ],
 
   update: function(e) {
     this.props.emit('updateText', e.target.value)
   },
 
   render: function() {
-    <input type="text" value={this.props.message} onChange={this.update} />
+    <input type="text" value={this.props.text} onChange={this.update} />
   }
 })
 
