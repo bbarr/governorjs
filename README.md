@@ -22,7 +22,7 @@ var Message = React.createClass({
   render: function() {
     return (
       <div id="example">
-        <MessageInput emit={this.props.emit} text={this.props.text} />
+        <MessageInput hub={this.props.hub} text={this.props.text} />
         { this.props.text }
       </div>
     )
@@ -35,7 +35,7 @@ var MessageInput = React.createClass({
   mixins: [ Governor.pureRenderMixin('text') ],
 
   update: function(e) {
-    this.props.emit('updateText', e.target.value)
+    this.props.hub.emit('updateText', e.target.value)
   },
 
   render: function() {
@@ -52,7 +52,7 @@ Governor.create({
 
   // state is the current state (initially an object with whatever changes the above stores make
   // hub is simple pub/sub to trigger actions in stores
-  React.render(<Message {...state} emit={hub.emit} />, document.getElementById('message'))
+  React.render(<Message {...state} hub={hub} />, document.getElementById('message'))
 })
 ```
 
