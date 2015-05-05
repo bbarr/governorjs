@@ -24,7 +24,7 @@ var Message = React.createClass({
 })
 
 var MessageInput = React.createClass({
-  mixins: [ Governor.pureRenderMixin('text') ],
+	mixins: [ Governor.pureRenderMixin('text') ],
 	render: function() {
 		return <input type="text" value={this.props.message} onChange={R.compose(hub.bind('updateText'), R.path([ 'target', 'value' ]))} />
 	}
@@ -41,11 +41,11 @@ governor({
 
 ##API
 
-###create :: (Object) -> Object
+###governor :: (object) -> null
 ```javascript
-var stateManager = Governor.create({
-  foo: fooStore,
-  bar: barStore
+governor({
+  foo: function(state) { state.set({ a: 1 }) },
+  bar: function(state) { state.set('default bar') }
 }, function(state) {
   // state.foo is fooStore's state
   // state.bar is barStore's state
@@ -59,9 +59,9 @@ var mixin = Governor.pureRenderMixin('foo', 'zap')
 ```
 The above mixin, when mixed into a component, would cause it to only rerender if its incoming "foo" or "zap" property was changed from the last render (using ```===```).
 
-###Store interface
+###Store interface :: (object) -> null
 A store is just a function.
 
-This function will receive 2 arguments, the first, an object containing ```get```, ```update```, ```set```, and ```merge``` methods, used to update the store's state.
+This function will receive an object containing ```get```, ```update```, ```set```, and ```merge``` methods, used to update the store's state.
 
 ```update``` uses React.addons.update, [documented here](http://facebook.github.io/react/docs/update.html). ```set``` and ```merge``` are shortcuts to those specific types of updates.
