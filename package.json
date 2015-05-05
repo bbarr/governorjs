@@ -1,6 +1,6 @@
 {
   "name": "governorjs",
-  "version": "0.0.4",
+  "version": "0.0.41",
   "description": "State manager courtesy of React.addons.update",
   "main": "lib/index.js",
   "scripts": {
