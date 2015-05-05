@@ -10,18 +10,16 @@ var TodoStore = function(state, hub) {
 
   // set default
   state.set({ 
-    $set: { 
-      list: [],
-      pending: '',
-      editBuffer: {}
-    }
+		list: [],
+		pending: '',
+		editBuffer: {}
   })
 
   var actions = {
 
     create: function() {
       var todo = { id: createId(), text: state.get().pending, done: false }
-      state.set({ 
+      state.update({ 
         list: { $push: [ todo ] },
         pending: { $set: '' }
       })
@@ -29,18 +27,18 @@ var TodoStore = function(state, hub) {
 
     remove: function(todo) {
       var index = state.get().list.indexOf(todo)
-      state.set({ list: { $splice: [ [ index, 1 ] ] } })
+      state.update({ list: { $splice: [ [ index, 1 ] ] } })
     },
 
     patch: function(todo, updated) {
       var index = state.get().list.indexOf(todo)
-      state.set({ 
+      state.update({ 
         list: R.assoc(index, { '$merge': updated }, {})
       })
     },
 
     startEditing: function(todo) {
-      state.set({
+      state.update({
         editBuffer: R.assoc(todo.id, { $set: todo }, {})
       })
     },
@@ -48,14 +46,14 @@ var TodoStore = function(state, hub) {
     cancelEditing: function(todo) {
       var index = state.get().list.indexOf(todo)
       var old = state.get().editBuffer[todo.id]
-      state.set({
+      state.update({
         list: R.assoc(index, { '$set': old }, {}),
         editBuffer: { $apply: R.omit([todo.id]) }
       })
     },
 
     stopEditing: function(todo) {
-      state.set({
+      state.update({
         editBuffer: { $apply: R.omit([todo.id]) }
       })
     }
@@ -68,7 +66,7 @@ var TodoStore = function(state, hub) {
     START_EDITING_TODO: actions.startEditing,
     CANCEL_EDITING_TODO: actions.cancelEditing,
     STOP_EDITING_TODO: actions.stopEditing,
-    SET_PENDING: function(text) { state.set({ pending: { $set: text } }) }
+    SET_PENDING: function(text) { state.update({ pending: { $set: text } }) }
   })
 }
 

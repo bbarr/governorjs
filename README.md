@@ -4,55 +4,38 @@ State manager courtesy of React.addons.update
 ## Example
 ```javascript
 var React = require('react')
-var Governor = require('governor')
+var governor = require('governor')
+var hub = governor.hub
 
-var messageStore = function(state, hub) {
-
-  function set(newText) { 
-    state.set({ $set: newText }) 
-  }
-
-  set('some default text')
-
-  hub.on('updateText', set)
+var messageStore = function(state) {
+  state.set('some default text')
+  hub.on('updateText', state.set)
 }
 
 var Message = React.createClass({
-
-  render: function() {
-    return (
-      <div id="example">
-        <MessageInput hub={this.props.hub} text={this.props.text} />
-        { this.props.text }
-      </div>
-    )
-  }
+	render: function(props) {
+		return (
+			<div id="example">
+				<MessageInput text={this.props.message} />
+				{ this.props.message }
+			</div>
+		)
+	}
 })
 
 var MessageInput = React.createClass({
-
-  // will only rerender if props.text is changed
   mixins: [ Governor.pureRenderMixin('text') ],
-
-  update: function(e) {
-    this.props.hub.emit('updateText', e.target.value)
-  },
-
-  render: function() {
-    <input type="text" value={this.props.text} onChange={this.update} />
-  }
+	render: function() {
+		return <input type="text" value={this.props.message} onChange={R.compose(hub.bind('updateText'), R.path([ 'target', 'value' ]))} />
+	}
 })
 
-Governor.create({
-
-  // binds messageStore's get/set to 'message' property of state given to below callback
+governor({
+  // binds messageStore to 'message' property of state given to below callback
   message: messageStore
-
-}, function(state, hub) {
-
-  // state is the current state (initially an object with whatever changes the above stores make
-  // hub is simple pub/sub to trigger actions in stores
-  React.render(<Message {...state} hub={hub} />, document.getElementById('message'))
+}, function(state) {
+  // state is the current state (initially an object with whatever changes the above stores make)
+  React.render(<Message {...state} />, document.getElementById('message'))
 })
 ```
 
@@ -63,10 +46,10 @@ Governor.create({
 var stateManager = Governor.create({
   foo: fooStore,
   bar: barStore
-}, function(state, hub) {
+}, function(state) {
   // state.foo is fooStore's state
   // state.bar is barStore's state
-  // do things with current state and communication hub
+  // do things with current state, like render a React component
 })
 ```
 
@@ -79,6 +62,6 @@ The above mixin, when mixed into a component, would cause it to only rerender if
 ###Store interface
 A store is just a function.
 
-This function will receive 2 arguments, the first, an object containing ```get``` and ```set``` methods, used to update the store's state, and the second, a reference to an event hub that it can listen to for relevant events.
+This function will receive 2 arguments, the first, an object containing ```get```, ```update```, ```set```, and ```merge``` methods, used to update the store's state.
 
-  ```set``` uses React.addons.update, [documented here](http://facebook.github.io/react/docs/update.html).
+```update``` uses React.addons.update, [documented here](http://facebook.github.io/react/docs/update.html). ```set``` and ```merge``` are shortcuts to those specific types of updates.
