@@ -1,6 +1,6 @@
 {
   "name": "governorjs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "State manager courtesy of React.addons.update",
   "main": "lib/index.js",
   "scripts": {
@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "ramda": "*",
-    "react": "*"
+    "react": "*",
+    "react-addons-update": "*"
   }
 }
